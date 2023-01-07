@@ -3,6 +3,7 @@ const authorModel = require("../models/authorModel");
 const { isValid } = require("../validator/validations")
 const validator = require('validator')
 const createAuthor = async function (req,res){
+    
     try{
         let data = req.body
         let {fname,lname,title,email,password} = data
