@@ -45,27 +45,28 @@ const createCollege = async (req, res) => {
     }
 };
 
-// <----------------------------Get Api--------------------------------->
-// ----------This Api is used for Get College Intern data----------------
+// ! <----------------------------Get Api--------------------------------->
+
 const getCollegeData = async function (req, res) {
+    res.setHeader('Access-Control-Allow-Origin','*')
     try {
         const collegeName = req.query.collegeName
         if (!collegeName) return res.status(400).send({ status: false, message: "College Name is mandatory to find a intern" })
-        const collegeData = await collegeModel.findOne({ name: collegeName.trim(), isDeleted: false }).select({ name: 1, fullName: 1, logoLink: 1, interns: 1 }).lean()
+
+        const collegeData = await collegeModel.findOne({ name: collegeName.trim(), isDeleted: false }).select({ name: 1, fullName: 1, logoLink: 1}).lean()
         if (!collegeData) {
             return res.status(404).send({ status: false, message: `college name ${collegeName} is not found` })
         }
-        
+
         let internData = await internModel.find({ collegeId: collegeData._id, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 })
         if (internData.length == 0) {
-
             collegeData.intern = internData
-            return res.status(400).send({ data: collegeData, status: false, message: "No entern found" })
+            return res.status(404).send({ data: collegeData, status: false, message: "No intern found" })
         }
 
         collegeData.intern = internData
-        
-        delete collegeData._id
+
+        // delete collegeData._id
 
         return res.status(200).send({ data: collegeData, status: true })
     }
@@ -73,9 +74,14 @@ const getCollegeData = async function (req, res) {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
+// ! <----------------------------Get Api--------------------------------->
+
+
 
 module.exports.createCollege = createCollege;
 module.exports.getCollegeData = getCollegeData;
+
+
 
 
 

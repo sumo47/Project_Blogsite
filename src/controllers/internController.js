@@ -6,12 +6,13 @@ const validator = require("../validator/validator.js");
 // ---------------This Api is used for Create Intern---------------------
 
 const createInterns = async function (req, res) {
+    res.setHeader('Access-Control-Allow-Origin','*')
     try {
         if (Object.keys(req.body).length === 0) {
             return res.status(400).send({ status: false, message: "no content in the document, please provide intern details" })
         }
         else {
-            const { name, email, mobile, collegeName } = req.body
+            const { name, email, mobile, collegeName } = req.body 
 
             if(!name) return res.status(400).send({status:false, msg:"Please Provide Name"})
             if(!email) return res.status(400).send({status:false, msg:"Please Provide email"})
